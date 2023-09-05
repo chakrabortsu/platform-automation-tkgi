@@ -44,7 +44,7 @@ resources:
     access_key_id: ((s3_access_key_id))
     secret_access_key: ((s3_secret_access_key))
     bucket: ((s3_pivnet_products_bucket))
-    regexp: pks-stemcell/\[stemcells-ubuntu-xenial,(.*)\]bosh-stemcell-.*-vsphere.*\.tgz
+    regexp: pks-stemcell/\[stemcells-ubuntu-jammy,(.*)\]bosh-stemcell-.*-vsphere.*\.tgz
     disable_ssl: true
 
 - name: healthwatch-product
@@ -55,6 +55,16 @@ resources:
     secret_access_key: ((s3_secret_access_key))
     bucket: ((s3_pivnet_products_bucket))
     regexp: \[p-healthwatch,(.*)\]healthwatch-\d.*.pivotal
+    disable_ssl: true
+
+- name: healthwatch-stemcell
+  type: s3
+  source:
+    endpoint: http://10.220.54.169:9000
+    access_key_id: ((s3_access_key_id))
+    secret_access_key: ((s3_secret_access_key))
+    bucket: ((s3_pivnet_products_bucket))
+    regexp: healthwatch-stemcell/\[stemcells-ubuntu-jammy,(.*)\]bosh-stemcell-.*-vsphere.*\.tgz
     disable_ssl: true
 
 - name: healthwatch-pks-exporter
@@ -106,8 +116,6 @@ resources:
     private_key: ((plat-auto-pipes-deploy-key.private_key)
     uri: ((pipeline-repo))
     branch: main
-    submodules: all
-    depth: 1
 # code_snippet resources-pipeline-configurations end yaml
 
 # code_snippet resources-pipeline-triggers start yaml
