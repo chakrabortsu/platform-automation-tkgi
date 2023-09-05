@@ -116,6 +116,8 @@ resources:
     private_key: ((plat-auto-pipes-deploy-key.private_key))
     uri: ((pipeline-repo))
     branch: main
+    submodules: all
+    depth: 1
 # code_snippet resources-pipeline-configurations end yaml
 
 # code_snippet resources-pipeline-triggers start yaml
