@@ -57,16 +57,6 @@ resources:
     regexp: \[p-healthwatch,(.*)\]healthwatch-\d.*.pivotal
     disable_ssl: true
 
-- name: healthwatch-stemcell
-  type: s3
-  source:
-    endpoint: http://10.220.54.169:9000
-    access_key_id: ((s3_access_key_id))
-    secret_access_key: ((s3_secret_access_key))
-    bucket: ((s3_pivnet_products_bucket))
-    regexp: healthwatch-stemcell/\[stemcells-ubuntu-jammy,(.*)\]bosh-stemcell-.*-vsphere.*\.tgz
-    disable_ssl: true
-
 - name: healthwatch-pks-exporter
   type: s3
   source:
@@ -76,6 +66,15 @@ resources:
     bucket: ((s3_pivnet_products_bucket))
     regexp: \[p-healthwatch,(.*)\]healthwatch-pks-exporter.*.pivotal
     disable_ssl: true
+
+- name: healthwatch-stemcell
+  type: s3
+  source:
+    endpoint: http://10.220.54.169:9000
+    access_key_id: ((s3_access_key_id))
+    secret_access_key: ((s3_secret_access_key))
+    bucket: ((s3_pivnet_products_bucket))
+    regexp: healthwatch-stemcell/\[stemcells-ubuntu-xenial,(.*)\]bosh-stemcell-.*-vsphere.*\.tgz
 
 # code_snippet resources-pipeline-products end yaml
 
