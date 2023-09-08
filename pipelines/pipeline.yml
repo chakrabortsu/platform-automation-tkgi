@@ -114,9 +114,9 @@ prepare-tasks-with-secrets: &prepare-tasks-with-secrets
     tasks: platform-automation-tasks
 # code_snippet prepare-tasks-with-secrets-usage end yaml
 # code_snippet prepare-image-usage start yaml
-prepare-image: &prepare-image
-  image: platform-automation-image
-  file: platform-automation-tasks/tasks/prepare-image.yml
+#prepare-image: &prepare-image
+#  image: platform-automation-image
+#  file: platform-automation-tasks/tasks/prepare-image.yml
 #  params:
 #    CA_CERTS: ((opsman-ssl.ca))
 # code_snippet prepare-image-usage end yaml
@@ -166,8 +166,6 @@ jobs:
     - get: state
   - task: prepare-tasks-with-secrets
     <<: *prepare-tasks-with-secrets
-  - task: prepare-image
-    <<: *prepare-image
   - task: download-opsman-image
     image: platform-automation-image
     file: platform-automation-tasks/tasks/download-product.yml
