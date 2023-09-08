@@ -138,7 +138,7 @@ jobs:
       image: platform-automation-image
       file: platform-automation-tasks/tasks/test-interpolate.yml
       params:
-        CONFIG_FILE: foundations/((foundation))/config/download-tas.yml
+        CONFIG_FILE: foundations/((foundation))/config/download-pks.yml
         SKIP_MISSING: true
       input_mapping:
         config: configuration
