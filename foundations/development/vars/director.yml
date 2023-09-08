@@ -1,0 +1,13 @@
+bosh_disk_path: pcf_disk
+bosh_template_folder: pcf_templates
+bosh_vm_folder: pcf_vms
+datacenter: vc01
+persistent_datastores_string: vsanDatastore
+ephemeral_datastores_string: vsanDatastore
+vcenter_url: vc01.h2o-2-16358.h2o.vmware.com
+vcenter_cluster: vc01cl01
+opsman_url: ops-manager2.h2o-2-16358.h2o.vmware.com
+nsx_url: nsxt01.h2o-2-16358.h2o.vmware.com
+ssl_verification_enabled: false
+vsphere_infra_network: infra
+vsphere_services_network: services

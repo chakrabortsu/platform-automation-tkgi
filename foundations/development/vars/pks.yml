@@ -1,0 +1,5 @@
+floating_ip_pool_ids: 2948eaec-179c-4f12-8a86-638d874612a5
+ip_block_id: d226bf5e-6515-4b4a-ab58-cdfcc6414583
+nodes_ip_block_id: b735a07a-6e50-4bc9-8c8d-05e8678808de
+t0_router_id: 16f02966-ad52-4b08-a16d-b2b35f255848
+pks_api_url: api.second-tkgi.h2o-2-16358.h2o.vmware.com

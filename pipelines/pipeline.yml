@@ -5,108 +5,83 @@
 groups:
 - jobs:
     - install-opsman
-    - expiring-certificates
     - delete-installation
     - test-platform-automation
     - export-installation
     - upgrade-opsman
     - download-upload-and-stage-healthwatch-pks-exporter
-    - download-upload-and-stage-healthwatch-pas-exporter
     - download-upload-and-stage-healthwatch
-    - download-upload-and-stage-tas
     - download-upload-and-stage-pks
     - configure-healthwatch-pks-exporter
-    - configure-healthwatch-pas-exporter
     - configure-healthwatch
-    - configure-tas
     - configure-pks
     - apply-product-changes
-    - run-tas-smoketest-errand
-    - collect-telemetry
-    - stage-configure-apply-telemetry
-  name: reference-pipeline
-- jobs:
-    - create-root-ca
-    - apply-new-ca
-    - activate-new-ca-and-regenerate-certs
-    - apply-certificates
-    - cleanup-ca-certificate-authorities
-  name: certificate-rotation
+  name: install-setup-pipeline
 # Groups end yaml
 
 # code_snippet reference-resources-s3 start yaml
-resource_types:
-- name: s3-with-arn
-  type: docker-image
-  source:
-    repository: concourse/s3-resource
-    tag: 1.2.1-ubuntu
+#resource_types:
+#- name: s3-with-arn
+#  type: docker-image
+#  source:
+#    repository: concourse/s3-resource
+#    tag: 1.2.1-ubuntu
 
 resources:
 - name: platform-automation-tasks
-  type: s3-with-arn
+  type: s3
   source:
-    access_key_id: ((s3_with_role.access_key_id))
-    secret_access_key: ((s3_with_role.secret_access_key))
-    aws_role_arn: ((s3_with_role.role_arn))
-    region_name: ((s3_region_name))
+    access_key_id: ((s3_access_key_id))
+    secret_access_key: ((s3_secret_access_key))
+    endpoint: http://10.220.54.169:9000
     bucket: ((s3_pivnet_products_bucket))
     regexp: .*tasks-(.*).zip
+    disable_ssl: true
 
 - name: platform-automation-image
-  type: s3-with-arn
+  type: s3
   source:
-    access_key_id: ((s3_with_role.access_key_id))
-    secret_access_key: ((s3_with_role.secret_access_key))
-    aws_role_arn: ((s3_with_role.role_arn))
-    region_name: ((s3_region_name))
+    access_key_id: ((s3_access_key_id))
+    secret_access_key: ((s3_secret_access_key))
+    endpoint: http://10.220.54.169:9000
     bucket: ((s3_pivnet_products_bucket))
     regexp: .*image-(.*).tgz
-
-- name: telemetry-collector-binary
-  type: s3-with-arn
-  source:
-    access_key_id: ((s3_with_role.access_key_id))
-    secret_access_key: ((s3_with_role.secret_access_key))
-    aws_role_arn: ((s3_with_role.role_arn))
-    region_name: ((s3_region_name))
-    bucket: ((s3_pivnet_products_bucket))
-    regexp: .*telemetry-(.*).tgz
-# code_snippet reference-resources-s3 end yaml
+    disable_ssl: true
 
 # code_snippet export-installation-resource-usage start yaml
 - name: installation
-  type: s3-with-arn
+  type: s3
   source:
-    access_key_id: ((s3_with_role.access_key_id))
-    secret_access_key: ((s3_with_role.secret_access_key))
-    aws_role_arn: ((s3_with_role.role_arn))
-    region_name: ((s3_region_name))
-    bucket: ((s3_installation_bucket))
+    access_key_id: ((s3_access_key_id))
+    secret_access_key: ((s3_secret_access_key))
+    endpoint: http://10.220.54.169:9000
+    bucket: ((s3_pivnet_products_bucket))
     regexp: ((foundation))-installation-(.*).zip
+    disable_ssl: true
 # code_snippet export-installation-resource-usage end
 
 # code_snippet resources-configurations start yaml
 # VM state and foundation configuration
 - name: state
-  type: s3-with-arn
+  type: s3
   source:
-    access_key_id: ((s3_with_role.access_key_id))
-    secret_access_key: ((s3_with_role.secret_access_key))
-    aws_role_arn: ((s3_with_role.role_arn))
-    bucket: ((s3_foundation_state_bucket))
-    region_name: ((s3_region_name))
+    access_key_id: ((s3_access_key_id))
+    secret_access_key: ((s3_secret_access_key))
+    bucket: ((s3_pivnet_products_bucket))
+    endpoint: http://10.220.54.169:9000
     versioned_file: state-((foundation)).yml
     initial_content_text: '{}'
     initial_version: 'empty-start'
+    disable_ssl: true
 
 # configurations
 - name: configuration
   type: git
   source:
-    private_key: ((docs-ref-pipeline-repo-key.private_key))
-    uri: ((docs-ref-pipeline-repo-uri))
-    branch: develop
+    private_key: ((plat-auto-pipes-deploy-key.private_key))
+    uri: ((pipeline-repo))
+    branch: main
+    submodules: all
 # code_snippet resources-configurations end yaml
 
 # code_snippet resources-triggers start yaml
@@ -139,11 +114,11 @@ prepare-tasks-with-secrets: &prepare-tasks-with-secrets
     tasks: platform-automation-tasks
 # code_snippet prepare-tasks-with-secrets-usage end yaml
 # code_snippet prepare-image-usage start yaml
-prepare-image: &prepare-image
-  image: platform-automation-image
-  file: platform-automation-tasks/tasks/prepare-image.yml
-  params:
-    CA_CERTS: ((opsman-ssl.ca))
+#prepare-image: &prepare-image
+#  image: platform-automation-image
+#  file: platform-automation-tasks/tasks/prepare-image.yml
+#  params:
+#    CA_CERTS: ((opsman-ssl.ca))
 # code_snippet prepare-image-usage end yaml
 # code_snippet reference-jobs start yaml
 jobs:
@@ -191,8 +166,6 @@ jobs:
     - get: state
   - task: prepare-tasks-with-secrets
     <<: *prepare-tasks-with-secrets
-  - task: prepare-image
-    <<: *prepare-image
   - task: download-opsman-image
     image: platform-automation-image
     file: platform-automation-tasks/tasks/download-product.yml
@@ -202,7 +175,7 @@ jobs:
     params:
       CONFIG_FILE: foundations/((foundation))/config/download-opsman.yml
       VARS_FILES: vars/foundations/((foundation))/vars/versions.yml
-      SOURCE: pivnet
+      SOURCE: s3
     output_mapping:
       downloaded-product: opsman-image
   # code_snippet create-vm-usage start yaml
@@ -261,7 +234,6 @@ jobs:
       DIRECTOR_CONFIG_FILE: foundations/((foundation))/config/director.yml
       VARS_FILES: |
         vars/foundations/((foundation))/vars/director.yml
-        vars/foundations/((foundation))/vars/tas.yml
         vars/foundations/((foundation))/vars/pks.yml 
   # code_snippet configure-director-usage end
   # code_snippet apply-director-changes-usage start yaml
@@ -304,8 +276,6 @@ jobs:
     - get: configuration
   - task: prepare-tasks-with-secrets
     <<: *prepare-tasks-with-secrets
-  - task: prepare-image
-    <<: *prepare-image
   # code_snippet revert-staged-changes-usage start yaml
   - task: revert-staged-changes
     image: platform-automation-image
@@ -347,8 +317,6 @@ jobs:
     - get: state
   - task: prepare-tasks-with-secrets
     <<: *prepare-tasks-with-secrets
-  - task: prepare-image
-    <<: *prepare-image
   - task: download-opsman-image
     image: platform-automation-image
     file: platform-automation-tasks/tasks/download-product.yml
@@ -358,7 +326,7 @@ jobs:
     params:
       CONFIG_FILE: foundations/((foundation))/config/download-opsman.yml
       VARS_FILES: vars/foundations/((foundation))/vars/versions.yml
-      SOURCE: pivnet
+      SOURCE: s3
     output_mapping:
       downloaded-product: opsman-image
   # code_snippet upgrade-opsman-usage start yaml
@@ -390,7 +358,6 @@ jobs:
       DIRECTOR_CONFIG_FILE: foundations/((foundation))/config/director.yml
       VARS_FILES: |
         vars/foundations/((foundation))/vars/director.yml
-        vars/foundations/((foundation))/vars/tas.yml
         vars/foundations/((foundation))/vars/pks.yml 
   - task: apply-director-changes
     image: platform-automation-image
@@ -428,8 +395,6 @@ jobs:
     - get: configuration
   - task: prepare-tasks-with-secrets
     <<: *prepare-tasks-with-secrets
-  - task: prepare-image
-    <<: *prepare-image
   # code_snippet download-product-usage-s3 start yaml
   - task: download-pks
     image: platform-automation-image
@@ -440,7 +405,7 @@ jobs:
     params:
       CONFIG_FILE: foundations/((foundation))/config/download-pks.yml
       VARS_FILES: vars/foundations/((foundation))/vars/versions.yml
-      SOURCE: pivnet
+      SOURCE: s3
     output_mapping:
       downloaded-product: pks-product
       downloaded-stemcell: pks-stemcell
@@ -466,65 +431,6 @@ jobs:
       ENV_FILE: foundations/config/env.yml
   # code_snippet upload-stemcell-usage end
 
-- name: download-upload-and-stage-tas
-  serial: true
-  serial_groups: [ products ]
-  plan:
-  - in_parallel:
-    - get: platform-automation-image
-      params:
-        unpack: true
-      trigger: true
-      passed: [ "upgrade-opsman" ]
-    - get: platform-automation-tasks
-      params:
-        unpack: true
-    - get: configuration
-  - task: prepare-tasks-with-secrets
-    <<: *prepare-tasks-with-secrets
-  - task: prepare-image
-    <<: *prepare-image
-  - task: download-tas
-    image: platform-automation-image
-    file: platform-automation-tasks/tasks/download-product.yml
-    input_mapping:
-      config: configuration
-      vars: configuration
-    params:
-      CONFIG_FILE: foundations/((foundation))/config/download-tas.yml
-      VARS_FILES: vars/foundations/((foundation))/vars/versions.yml
-      SOURCE: pivnet
-    output_mapping:
-      downloaded-product: tas-product
-      downloaded-stemcell: tas-stemcell
-  # code_snippet upload-product-usage start yaml
-  - task: upload-tas-product
-    image: platform-automation-image
-    file: platform-automation-tasks/tasks/upload-product.yml
-    input_mapping:
-      product: tas-product
-      env: configuration
-    params:
-      ENV_FILE: foundations/config/env.yml
-  # code_snippet upload-product-usage end
-  - task: upload-tas-stemcell
-    image: platform-automation-image
-    file: platform-automation-tasks/tasks/upload-stemcell.yml
-    input_mapping:
-      env: configuration
-      stemcell: tas-stemcell
-    params:
-      ENV_FILE: foundations/config/env.yml
-  # code_snippet stage-product-usage start yaml
-  - task: upload-and-stage-tas
-    image: platform-automation-image
-    file: platform-automation-tasks/tasks/stage-product.yml
-    input_mapping:
-      product: tas-product
-      env: configuration
-    params:
-      ENV_FILE: foundations/config/env.yml
-  # code_snippet stage-product-usage end
 - name: download-upload-and-stage-healthwatch
   serial: true
   serial_groups: [ products ]
@@ -550,7 +456,7 @@ jobs:
       params:
         CONFIG_FILE: foundations/((foundation))/config/download-healthwatch.yml
         VARS_FILES: vars/foundations/((foundation))/vars/versions.yml
-        SOURCE: pivnet
+        SOURCE: s3
       output_mapping:
         downloaded-product: healthwatch-product
         downloaded-stemcell: healthwatch-stemcell
@@ -571,42 +477,6 @@ jobs:
       params:
         ENV_FILE: foundations/config/env.yml
 
-- name: download-upload-and-stage-healthwatch-pas-exporter
-  serial: true
-  serial_groups: [ products ]
-  plan:
-    - in_parallel:
-        - get: platform-automation-image
-          params:
-            unpack: true
-          trigger: true
-          passed: [ "upgrade-opsman" ]
-        - get: platform-automation-tasks
-          params:
-            unpack: true
-        - get: configuration
-    - task: prepare-tasks-with-secrets
-      <<: *prepare-tasks-with-secrets
-    - task: download-healthwatch
-      image: platform-automation-image
-      file: platform-automation-tasks/tasks/download-product.yml
-      input_mapping:
-        config: configuration
-        vars: configuration
-      params:
-        CONFIG_FILE: foundations/((foundation))/config/download-healthwatch-pas-exporter.yml
-        VARS_FILES: vars/foundations/((foundation))/vars/versions.yml
-        SOURCE: pivnet
-      output_mapping:
-        downloaded-product: healthwatch-pas-exporter
-    - task: upload-and-stage-healthwatch-pas-exporter
-      image: platform-automation-image
-      file: platform-automation-tasks/tasks/upload-and-stage-product.yml
-      input_mapping:
-        product: healthwatch-pas-exporter
-        env: configuration
-      params:
-        ENV_FILE: foundations/config/env.yml
 
 - name: download-upload-and-stage-healthwatch-pks-exporter
   serial: true
@@ -633,7 +503,7 @@ jobs:
       params:
         CONFIG_FILE: foundations/((foundation))/config/download-healthwatch-pks-exporter.yml
         VARS_FILES: vars/foundations/((foundation))/vars/versions.yml
-        SOURCE: pivnet
+        SOURCE: s3
       output_mapping:
         downloaded-product: healthwatch-pks-exporter
     - task: upload-and-stage-healthwatch-pks-exporter
@@ -662,8 +532,6 @@ jobs:
     - get: configuration
   - task: prepare-tasks-with-secrets
     <<: *prepare-tasks-with-secrets
-  - task: prepare-image
-    <<: *prepare-image
   # code_snippet configure-product-usage start yaml
   - task: configure-pks
     image: platform-automation-image
@@ -679,37 +547,6 @@ jobs:
         vars/foundations/((foundation))/vars/director.yml
         vars/foundations/((foundation))/vars/pks.yml
   # code_snippet configure-product-usage end
-
-- name: configure-tas
-  serial: true
-  serial_groups: [ install ]
-  plan:
-    - in_parallel:
-      - get: platform-automation-image
-        params:
-          unpack: true
-        passed:
-          - download-upload-and-stage-tas
-        trigger: true
-      - get: platform-automation-tasks
-        params:
-          unpack: true
-      - get: configuration
-    - task: prepare-tasks-with-secrets
-      <<: *prepare-tasks-with-secrets
-    - task: configure-tas
-      image: platform-automation-image
-      file: platform-automation-tasks/tasks/configure-product.yml
-      input_mapping:
-        config: configuration
-        env: configuration
-        vars: configuration
-      params:
-        CONFIG_FILE: foundations/((foundation))/config/tas.yml
-        ENV_FILE: foundations/config/env.yml
-        VARS_FILES: |
-          vars/foundations/((foundation))/vars/tas.yml
-          vars/foundations/((foundation))/vars/director.yml
 
 - name: configure-healthwatch
   serial: true
@@ -741,35 +578,6 @@ jobs:
         VARS_FILES: |
           vars/foundations/((foundation))/vars/director.yml
 
-- name: configure-healthwatch-pas-exporter
-  serial: true
-  serial_groups: [ install ]
-  plan:
-    - in_parallel:
-      - get: platform-automation-image
-        params:
-          unpack: true
-        passed:
-          - download-upload-and-stage-healthwatch-pas-exporter
-        trigger: true
-      - get: platform-automation-tasks
-        params:
-          unpack: true
-      - get: configuration
-    - task: prepare-tasks-with-secrets
-      <<: *prepare-tasks-with-secrets
-    - task: configure-healthwatch
-      image: platform-automation-image
-      file: platform-automation-tasks/tasks/configure-product.yml
-      input_mapping:
-        config: configuration
-        env: configuration
-        vars: configuration
-      params:
-        CONFIG_FILE: foundations/((foundation))/config/healthwatch-pas-exporter.yml
-        ENV_FILE: foundations/config/env.yml
-        VARS_FILES: |
-          vars/foundations/((foundation))/vars/director.yml
 
 - name: configure-healthwatch-pks-exporter
   serial: true
@@ -811,9 +619,7 @@ jobs:
         unpack: true
       passed:
       - configure-pks
-      - configure-tas
       - configure-healthwatch
-      - configure-healthwatch-pas-exporter
       - configure-healthwatch-pks-exporter
       trigger: true
     - get: platform-automation-tasks
@@ -822,8 +628,6 @@ jobs:
     - get: configuration
   - task: prepare-tasks-with-secrets
     <<: *prepare-tasks-with-secrets
-  - task: prepare-image
-    <<: *prepare-image
   # code_snippet pre-deploy-check-usage start yaml
   - task: pre-deploy-check
     image: platform-automation-image
@@ -864,141 +668,6 @@ jobs:
   - put: installation
     params:
       file: installation/((foundation))-installation*.zip
-- name: run-tas-smoketest-errand
-  serial: true
-  plan:
-  - in_parallel:
-    - get: platform-automation-image
-      params:
-        unpack: true
-      passed:
-      - configure-pks
-      - configure-tas
-      - configure-healthwatch
-      trigger: true
-    - get: platform-automation-tasks
-      params:
-        unpack: true
-    - get: configuration
-  - task: prepare-tasks-with-secrets
-    <<: *prepare-tasks-with-secrets
-  - task: prepare-image
-    <<: *prepare-image
-  # code_snippet run-bosh-errand-usage start yaml
-  - task: run-bosh-errand
-    image: platform-automation-image
-    file: platform-automation-tasks/tasks/run-bosh-errand.yml
-    input_mapping:
-      env: configuration
-    params:
-      PRODUCT_NAME: cf
-      ERRAND_NAME: smoke_tests
-      ENV_FILE: foundations/config/env.yml
-      OPSMAN_SSH_PRIVATE_KEY: ((ops_manager_ssh_private_key))
-  # code_snippet run-bosh-errand-usage end
-- name: collect-telemetry
-  serial: true
-  serial_groups: [ install ]
-  plan:
-  - in_parallel:
-    - get: telemetry-collector-binary
-      params:
-        unpack: true
-    - get: platform-automation-image
-      params:
-        unpack: true
-      passed:
-      - apply-product-changes
-      trigger: true
-    - get: platform-automation-tasks
-      params:
-        unpack: true
-    - get: configuration
-  - task: prepare-tasks-with-secrets
-    <<: *prepare-tasks-with-secrets
-  - task: prepare-image
-    <<: *prepare-image
-  # code_snippet collect-telemetry-usage start yaml
-  - task: collect-telemetry-data
-    image: platform-automation-image
-    file: platform-automation-tasks/tasks/collect-telemetry.yml
-    input_mapping:
-      env: configuration
-      config: configuration
-    params:
-      CONFIG_FILE: foundations/((foundation))/config/telemetry.yml
-      ENV_FILE: foundations/config/env.yml
-  # code_snippet collect-telemetry-usage end
-  # code_snippet send-telemetry-usage start yaml
-  - task: send-telemetry-data
-    attempts: 3
-    image: platform-automation-image
-    file: platform-automation-tasks/tasks/send-telemetry.yml
-    params:
-      API_KEY: no-op-test-key
-      DATA_FILE_PATH: collected-telemetry-data/FoundationDetails*.tar
-# code_snippet send-telemetry-usage end
-- name: expiring-certificates
-  serial: true
-  serial_groups: [ install ]
-  plan:
-    - in_parallel:
-      - get: daily-trigger
-        trigger: true
-      - get: platform-automation-image
-        params:
-          unpack: true
-      - get: platform-automation-tasks
-        params:
-          unpack: true
-      - get: configuration
-      - get: state
-    - task: prepare-tasks-with-secrets
-      <<: *prepare-tasks-with-secrets
-    # code_snippet expiring-certificates-usage start yaml
-    - task: expiring-certificates
-      image: platform-automation-image
-      file: platform-automation-tasks/tasks/expiring-certificates.yml
-      input_mapping:
-        env: configuration
-      params:
-        ENV_FILE: foundations/config/env.yml
-        EXPIRES_WITHIN: 2m
-    # code_snippet expiring-certificates-usage end
-- name: stage-configure-apply-telemetry
-  serial_groups: [install]
-  plan:
-    - in_parallel:
-      - get: platform-automation-image
-        params:
-          unpack: true
-        passed:
-          - apply-product-changes
-        trigger: true
-      - get: platform-automation-tasks
-        params:
-          unpack: true
-      - get: configuration
-    - task: prepare-tasks-with-secrets
-      <<: *prepare-tasks-with-secrets
-    - task: prepare-image
-      <<: *prepare-image
-    # code_snippet stage-configure-apply-usage start yaml
-    - task: stage-configure-apply
-      image: platform-automation-image
-      file: platform-automation-tasks/tasks/stage-configure-apply.yml
-      attempts: 3
-      params:
-        CONFIG_FILE: foundations/((foundation))/config/p-telemetry.yml
-        STAGE_PRODUCT_CONFIG_FILE: foundations/((foundation))/config/p-telemetry.yml
-        ENV_FILE: foundations/config/env.yml
-        VARS_FILES: |
-          vars/foundations/((foundation))/vars/director.yml
-      input_mapping:
-        env: configuration
-        config: configuration
-        vars: configuration
-    # code_snippet stage-configure-apply-usage end
 - name: delete-installation
   serial: true
   serial_groups: [install]
@@ -1039,168 +708,7 @@ jobs:
             file: generated-state/state-((foundation)).yml
     # code_snippet delete-vm-usage end
 
-# code_snippet certificate-rotation start
-- name: create-root-ca
-  plan:
-    - in_parallel:
-        - get: platform-automation-image
-          params:
-            unpack: true
-        - get: platform-automation-tasks
-          params:
-            unpack: true
-        - get: configuration
-    - task: prepare-tasks-with-secrets
-      <<: *prepare-tasks-with-secrets
-    # code_snippet configure-new-certificate-authority-usage start yaml
-    - task: create-root-ca
-      image: platform-automation-image
-      file: platform-automation-tasks/tasks/configure-new-certificate-authority.yml
-      input_mapping:
-        env: configuration
-      params:
-        ENV_FILE: foundations/config/env.yml
-    # code_snippet configure-new-certificate-authority-usage end
 
-- name: apply-new-ca
-  serial: true
-  plan:
-    - in_parallel:
-        - get: platform-automation-image
-          params:
-            unpack: true
-          passed:
-            - create-root-ca
-        - get: platform-automation-tasks
-          params:
-            unpack: true
-        - get: configuration
-    - task: prepare-tasks-with-secrets
-      <<: *prepare-tasks-with-secrets
-    - task: pre-deploy-check
-      image: platform-automation-image
-      file: platform-automation-tasks/tasks/pre-deploy-check.yml
-      input_mapping:
-        env: configuration
-      params:
-        ENV_FILE: foundations/config/env.yml
-    - task: apply-product-changes
-      attempts: 3
-      image: platform-automation-image
-      file: platform-automation-tasks/tasks/apply-changes.yml
-      input_mapping:
-        env: configuration
-      params:
-        ENV_FILE: foundations/config/env.yml
-        SELECTIVE_DEPLOY_PRODUCTS: "cf,p-bosh,p-healthwatch2,p-healthwatch2-pas-exporter,pivotal-telemetry-om"
-
-- name: activate-new-ca-and-regenerate-certs
-  serial: true
-  plan:
-    - in_parallel:
-        - get: platform-automation-image
-          params:
-            unpack: true
-          passed:
-            - apply-new-ca
-        - get: platform-automation-tasks
-          params:
-            unpack: true
-        - get: configuration
-    - task: prepare-tasks-with-secrets
-      <<: *prepare-tasks-with-secrets
-    # code_snippet activate-certificate-authority-usage start yaml
-    - task: activate-new-ca
-      image: platform-automation-image
-      file: platform-automation-tasks/tasks/activate-certificate-authority.yml
-      input_mapping:
-        env: configuration
-      params:
-        ENV_FILE: foundations/config/env.yml
-    # code_snippet activate-certificate-authority-usage end
-    # code_snippet regenerate-certificates-usage start yaml
-    - task: regenerate-certificates
-      image: platform-automation-image
-      file: platform-automation-tasks/tasks/regenerate-certificates.yml
-      input_mapping:
-        env: configuration
-      params:
-        ENV_FILE: foundations/config/env.yml
-    # code_snippet regenerate-certificates-usage end
-
-- name: apply-certificates
-  serial: true
-  plan:
-    - in_parallel:
-        - get: platform-automation-image
-          params:
-            unpack: true
-          passed:
-            - activate-new-ca-and-regenerate-certs
-        - get: platform-automation-tasks
-          params:
-            unpack: true
-        - get: configuration
-    - task: prepare-tasks-with-secrets
-      <<: *prepare-tasks-with-secrets
-    - task: pre-deploy-check
-      image: platform-automation-image
-      file: platform-automation-tasks/tasks/pre-deploy-check.yml
-      input_mapping:
-        env: configuration
-      params:
-        ENV_FILE: foundations/config/env.yml
-    - task: apply-product-changes
-      attempts: 3
-      image: platform-automation-image
-      file: platform-automation-tasks/tasks/apply-changes.yml
-      input_mapping:
-        env: configuration
-      params:
-        ENV_FILE: foundations/config/env.yml
-        SELECTIVE_DEPLOY_PRODUCTS: "cf,p-bosh,p-healthwatch2,p-healthwatch2-pas-exporter,pivotal-telemetry-om"
-
-- name: cleanup-ca-certificate-authorities
-  serial: true
-  plan:
-    - in_parallel:
-        - get: platform-automation-image
-          params:
-            unpack: true
-          passed:
-            - apply-certificates
-        - get: platform-automation-tasks
-          params:
-            unpack: true
-        - get: configuration
-    - task: prepare-tasks-with-secrets
-      <<: *prepare-tasks-with-secrets
-    # code_snippet delete-certificate-authority-usage start yaml
-    - task: delete-certificate-authority
-      image: platform-automation-image
-      file: platform-automation-tasks/tasks/delete-certificate-authority.yml
-      input_mapping:
-        env: configuration
-      params:
-        ENV_FILE: foundations/config/env.yml
-    # code_snippet delete-certificate-authority-usage end
-    - task: pre-deploy-check
-      image: platform-automation-image
-      file: platform-automation-tasks/tasks/pre-deploy-check.yml
-      input_mapping:
-        env: configuration
-      params:
-        ENV_FILE: foundations/config/env.yml
-    - task: apply-product-changes
-      attempts: 3
-      image: platform-automation-image
-      file: platform-automation-tasks/tasks/apply-changes.yml
-      input_mapping:
-        env: configuration
-      params:
-        ENV_FILE: foundations/config/env.yml
-        SELECTIVE_DEPLOY_PRODUCTS: "cf,p-bosh,p-healthwatch2,p-healthwatch2-pas-exporter,pivotal-telemetry-om"
-# code_snippet certificate-rotation end
 # code_snippet reference-jobs end yaml
 # code_snippet reference-pipeline end
 # The previous line helps maintain current documentation at http://docs.pivotal.io.

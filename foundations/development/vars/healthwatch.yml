@@ -1,0 +1,2 @@
+vsphere_infra_network: infra
+vsphere_services_network: services
