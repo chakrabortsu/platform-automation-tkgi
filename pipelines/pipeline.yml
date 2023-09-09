@@ -29,16 +29,6 @@ resource_types:
 
 resources:
 
-- name: opsman-product
-  type: s3
-  source:
-    endpoint: http://10.220.54.169:9000
-    access_key_id: ((s3_access_key_id))
-    secret_access_key: ((s3_secret_access_key))
-    bucket: ((s3_pivnet_products_bucket))
-    regexp: \[ops-manager,(.*)\]ops-manager-vsphere.*.ova
-    disable_ssl: true
-
 - name: platform-automation-tasks
   type: s3
   source:
@@ -154,6 +144,7 @@ jobs:
         SKIP_MISSING: true
       input_mapping:
         config: configuration
+        vars: configuration
     # code_snippet test-interpolate-usage end
     # code_snippet test-usage start yaml
     - task: test
@@ -183,16 +174,13 @@ jobs:
     file: platform-automation-tasks/tasks/download-product.yml
     input_mapping:
       config: configuration
+      vars: configuration
     params:
       CONFIG_FILE: foundations/((foundation))/config/download-opsman.yml
-     # VARS_FILES: vars/foundations/((foundation))/vars/versions.yml
-     # SOURCE: s3
+      VARS_FILES: vars/foundations/((foundation))/vars/versions.yml
+      SOURCE: s3
     output_mapping:
       downloaded-product: opsman-image
-  - in_parallel:
-    - put: opsman-product
-      params:
-        file: downloaded-product/*
   # code_snippet create-vm-usage start yaml
   - task: create-vm
     image: platform-automation-image
