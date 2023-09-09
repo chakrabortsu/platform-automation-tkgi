@@ -168,12 +168,28 @@ jobs:
     - get: state
   - task: prepare-tasks-with-secrets
     <<: *prepare-tasks-with-secrets
+  - task: interpolate-env-creds
+    image: platform-automation-image
+    file: platform-automation-tasks/tasks/credhub-interpolate.yml
+    params:
+      CREDHUB_CLIENT: ((credhub-client))
+      CREDHUB_SECRET: ((credhub-secret))
+      CREDHUB_SERVER: ((credhub-server))
+      PREFIX: '/concourse/main'
+      INTERPOLATION_PATHS: foundations/((foundation))/config
+      SKIP_MISSING: true
+    input_mapping:
+      files: configuration
+    output_mapping:
+      interpolated-files: interpolated-configs
   - task: download-opsman-image
     image: platform-automation-image
     file: platform-automation-tasks/tasks/download-product.yml
     input_mapping:
-      config: configuration
+      config: interpolated-configs
+      secrets: interpolated-configs
       vars: configuration
+      state: env
     params:
       CONFIG_FILE: foundations/((foundation))/config/download-opsman.yml
       VARS_FILES: vars/foundations/((foundation))/vars/versions.yml
