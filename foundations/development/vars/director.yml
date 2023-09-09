@@ -11,3 +11,6 @@ nsx_url: nsxt01.h2o-2-16358.h2o.vmware.com
 ssl_verification_enabled: false
 vsphere_infra_network: infra
 vsphere_services_network: services
+opsman_username: admin
+opsman_password: VMware1!
+opsman_decryption_passphrase: VMware1!
