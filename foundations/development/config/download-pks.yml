@@ -2,6 +2,7 @@
 pivnet-product-slug: pivotal-container-service
 
 pivnet-file-glob: "pivotal-container-service*.pivotal"
+product-version: 1.17.0
 stemcell-iaas: vsphere
 
 s3-access-key-id: ((s3_access_key_id))
@@ -9,4 +10,5 @@ s3-secret-access-key: ((s3_secret_access_key))
 s3-bucket: ((s3_pivnet_products_bucket))
 s3-endpoint: http://10.220.54.169:9000
 s3-disable-ssl: true
+s3-region-name: 'region'
 s3-stemcell-path: pks-stemcell
