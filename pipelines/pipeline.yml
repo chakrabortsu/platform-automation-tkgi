@@ -139,9 +139,11 @@ jobs:
       file: platform-automation-tasks/tasks/test-interpolate.yml
       params:
         CONFIG_FILE: foundations/((foundation))/config/download-pks.yml
+        VARS_FILES: vars/foundations/((foundation))/vars/versions.yml
         SKIP_MISSING: true
       input_mapping:
         config: configuration
+        vars: configuration
     # code_snippet test-interpolate-usage end
     # code_snippet test-usage start yaml
     - task: test
@@ -166,24 +168,11 @@ jobs:
     - get: state
   - task: prepare-tasks-with-secrets
     <<: *prepare-tasks-with-secrets
-  - task: credhub-interpolate
-    image: platform-automation-image
-    file: platform-automation-tasks/tasks/credhub-interpolate.yml
-    params:
-      CREDHUB_CLIENT: ((credhub-client))
-      CREDHUB_SECRET: ((credhub-secret))
-      CREDHUB_SERVER: ((credhub-server))
-      PREFIX: /concourse/main/
-    input_mapping:
-      env: configuration
-      configuration: configuration
-    output_mapping:
-      interpolated-files: interpolated-configs
   - task: download-opsman-image
     image: platform-automation-image
     file: platform-automation-tasks/tasks/download-product.yml
     input_mapping:
-      config: interpolated-configs
+      config: configuration
       vars: configuration
     params:
       CONFIG_FILE: foundations/((foundation))/config/download-opsman.yml
