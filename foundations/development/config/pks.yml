@@ -48,7 +48,7 @@ product-properties:
   .properties.network_selector.nsx.nodes-ip-block-id:
     value: b735a07a-6e50-4bc9-8c8d-05e8678808de
   .properties.network_selector.nsx.nsx-t-ca-cert:
-    value: 14
+    value: ((nsx_ca_cert.public_key))
   .properties.network_selector.nsx.nsx-t-host:
     value: nsxt01.h2o-2-16358.h2o.vmware.com
   .properties.network_selector.nsx.nsx-t-insecure:
