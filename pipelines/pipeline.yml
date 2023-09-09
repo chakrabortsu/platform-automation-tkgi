@@ -177,7 +177,7 @@ jobs:
     params:
       CONFIG_FILE: foundations/((foundation))/config/download-opsman.yml
       VARS_FILES: vars/foundations/((foundation))/vars/versions.yml
-      SOURCE: s3
+      SOURCE: pivnet
     output_mapping:
       downloaded-product: opsman-image
   # code_snippet create-vm-usage start yaml
