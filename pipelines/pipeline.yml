@@ -109,7 +109,7 @@ prepare-tasks-with-secrets: &prepare-tasks-with-secrets
     config: configuration
     vars: configuration
   params:
-    CONFIG_PATHS: config/foundations/config config/foundations/((foundation))/config 
+    CONFIG_PATHS: config/foundations/config config/foundations/((foundation))/config/download-opsman.yml 
     VARS_PATHS: vars/foundations/((foundation))/vars
   output_mapping:
     tasks: platform-automation-tasks
