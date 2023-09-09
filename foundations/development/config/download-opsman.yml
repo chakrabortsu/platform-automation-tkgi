@@ -1,10 +1,9 @@
 ---
 pivnet-product-slug: ops-manager
 pivnet-file-glob: "ops-manager*.ova"
-product-version: ((opsman-version))
 
 s3-access-key-id: ((s3_access_key_id))
 s3-secret-access-key: ((s3_secret_access_key))
-s3-bucket: ((s3_pivnet_products_bucket))
+blobstore-bucket: ((s3_pivnet_products_bucket))
 s3-endpoint: http://10.220.54.169:9000
 s3-disable-ssl: true
