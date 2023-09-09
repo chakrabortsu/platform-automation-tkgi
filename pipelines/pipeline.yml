@@ -172,7 +172,7 @@ jobs:
     image: platform-automation-image
     file: platform-automation-tasks/tasks/download-product.yml
     input_mapping:
-      config: configurations
+      config: configuration
       vars: configuration
     params:
       CONFIG_FILE: foundations/((foundation))/config/download-opsman.yml
