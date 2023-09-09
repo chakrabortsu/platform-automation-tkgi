@@ -8,3 +8,4 @@ s3-secret-access-key: ((s3_secret_access_key))
 blobstore-bucket: ((s3_pivnet_products_bucket))
 s3-endpoint: http://10.220.54.169:9000
 s3-disable-ssl: true
+s3-region-name: 'region'
