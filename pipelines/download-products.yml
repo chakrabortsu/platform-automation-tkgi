@@ -120,10 +120,10 @@ resources:
 # code_snippet resources-pipeline-configurations end yaml
 
 # code_snippet resources-pipeline-triggers start yaml
-- name: daily
-  type: time
-  source:
-    interval: 24h
+#- name: daily
+#  type: time
+ # source:
+ #   interval: 24h
 # code_snippet resources-pipeline-triggers end yaml
 
 # code_snippet resources-pipeline-prepare-tasks-with-secrets start yaml
@@ -146,8 +146,8 @@ jobs:
 - name: fetch-opsman
   plan:
   - in_parallel:
-    - get: daily
-      trigger: true
+   # - get: daily
+    #  trigger: true
     - get: platform-automation-image
       params:
         unpack: true
@@ -173,8 +173,8 @@ jobs:
 - name: fetch-pks
   plan:
   - in_parallel:
-    - get: daily
-      trigger: true
+    #- get: daily
+     # trigger: true
     - get: platform-automation-image
       params:
         unpack: true
@@ -205,8 +205,8 @@ jobs:
 - name: fetch-healthwatch
   plan:
     - in_parallel:
-      - get: daily
-        trigger: true
+      #- get: daily
+       # trigger: true
       - get: platform-automation-image
         params:
           unpack: true
@@ -235,8 +235,8 @@ jobs:
 - name: fetch-healthwatch-pks-exporter
   plan:
     - in_parallel:
-      - get: daily
-        trigger: true
+      #- get: daily
+       # trigger: true
       - get: platform-automation-image
         params:
           unpack: true
