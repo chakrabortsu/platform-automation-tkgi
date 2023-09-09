@@ -35,8 +35,8 @@ iaas-configurations:
   persistent_datastores_string: vsanDatastore
   ssl_verification_enabled: false
   vcenter_host: vc01.h2o-2-16358.h2o.vmware.com
-  vcenter_password: ((vcenter_username))
-  vcenter_username: ((vcenter_password))
+  vcenter_password: ((vcenter_password))
+  vcenter_username: ((vcenter_username))
 network-assignment:
   network:
     name: infra
