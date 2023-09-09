@@ -28,6 +28,7 @@ resource_types:
     tag: 1.2.1-ubuntu
 
 resources:
+
 - name: platform-automation-tasks
   type: s3
   source:
