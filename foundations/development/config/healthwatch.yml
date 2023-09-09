@@ -7,9 +7,9 @@ network-properties:
     - name: az1
     - name: az2
   network:
-    name: ((vsphere_infra_network))
+    name: infra
   service_network:
-    name: ((vsphere_services_network))
+    name: services
 product-properties:
   .healthwatch-forwarder.boshhealth_instance_count:
     value: 1

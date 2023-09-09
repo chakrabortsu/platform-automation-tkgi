@@ -3,13 +3,13 @@ opsman-configuration:
   vsphere:
     vcenter:
     #  ca_cert: cert                 # REQUIRED if insecure = 0 (secure)
-      datacenter: ((datacenter))
-      datastore: ((persistent_datastores_string))
-      folder: /((datacenter))/vm/ # RECOMMENDED, but not required
-      url: ((vcenter_url))
+      datacenter: vc01
+      datastore: vsanDatastore
+      folder: /vc01/vm/ # RECOMMENDED, but not required
+      url: vc01.h2o-2-16358.h2o.vmware.com
       username: ((vcenter_username))
       password: ((vcenter_password))
-      resource_pool: /((datacenter))/host/((vcenter_cluster))/Resources/RP-2-MGMT-TKGi
+      resource_pool: /vc01/host/vc01cl01/Resources/RP-2-MGMT-TKGi
       # resource_pool can use a cluster - /example-dc/host/example-cluster
 
       # Optional

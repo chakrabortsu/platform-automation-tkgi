@@ -15,15 +15,15 @@ az-configuration:
     resource_pool: RP-2-MGMT-TKGi
 iaas-configurations:
 - additional_cloud_properties: {}
-  bosh_disk_path: ((bosh_disk_path))
-  bosh_template_folder: ((bosh_template_folder))
-  bosh_vm_folder: ((bosh_vm_folder))
-  datacenter: ((datacenter))
+  bosh_disk_path: pcf_disk
+  bosh_template_folder: pcf_templates
+  bosh_vm_folder: pcf_vms
+  datacenter: vc01
   disk_type: thin
   ephemeral_datastore_clusters_string: ""
-  ephemeral_datastores_string: ((ephemeral_datastores_string))
+  ephemeral_datastores_string: vsanDatastore
   name: dafault
-  nsx_address: ((nsx_url))
+  nsx_address: nsxt01.h2o-2-16358.h2o.vmware.com
   nsx_ca_certificate: ((nsx.ca_cert.public_key))
   nsx_mode: nsx-t
   nsx_networking_enabled: true
@@ -32,9 +32,9 @@ iaas-configurations:
   nsx_t_use_policy_api: false
   nsx_username: admin
   persistent_datastore_clusters_string: ""
-  persistent_datastores_string: ((persistent_datastores_string))
-  ssl_verification_enabled: ((ssl_verification_enabled))
-  vcenter_host: ((vcenter_url))
+  persistent_datastores_string: vsanDatastore
+  ssl_verification_enabled: false
+  vcenter_host: vc01.h2o-2-16358.h2o.vmware.com
   vcenter_password: ((vcenter_username))
   vcenter_username: ((vcenter_password))
 network-assignment:
