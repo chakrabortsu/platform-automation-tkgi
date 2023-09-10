@@ -1,15 +1,116 @@
----
 product-name: p-healthwatch2-pks-exporter
-network-properties:
-  network:
-    name: pks
-  service_network:
-    name: services
-  other_availability_zones:
-  - name: az1
-  - name: az2
-  singleton_availability_zone:
-    name: az1
 product-properties:
-  .bosh-health-exporter.health_check_az:
-    value: az1
+  .cert-expiration-exporter.skip_ssl_validation:
+    value: false
+  .pks-sli-exporter.skip_ssl_verification:
+    value: true
+  .pks-sli-exporter.test_frequency_seconds:
+    value: 60
+network-properties:
+  network: infra
+  other_availability_zones: 
+  value:
+    - az1
+    - az2
+  service_network: infra
+  singleton_availability_zone: 
+  value:
+    - az1
+resource-config:
+  bosh-deployments-exporter:
+    max_in_flight: 1
+    additional_networks: []
+    additional_vm_extensions: []
+    instance_type:
+      id: automatic
+    instances: automatic
+    nsxt:
+      lb:
+        server_pools: []
+      ns_groups: []
+      vif_type: null
+    persistent_disk:
+      name: automatic
+      size_mb: automatic
+    swap_as_percent_of_memory_size: automatic
+  bosh-health-exporter:
+    max_in_flight: 2
+    additional_networks: []
+    additional_vm_extensions: []
+    instance_type:
+      id: automatic
+    instances: automatic
+    nsxt:
+      lb:
+        server_pools: []
+      ns_groups: []
+      vif_type: null
+    persistent_disk:
+      name: automatic
+      size_mb: automatic
+    swap_as_percent_of_memory_size: automatic
+  cert-expiration-exporter:
+    max_in_flight: 5
+    additional_networks: []
+    additional_vm_extensions: []
+    instance_type:
+      id: automatic
+    instances: automatic
+    nsxt:
+      lb:
+        server_pools: []
+      ns_groups: []
+      vif_type: null
+    persistent_disk:
+      name: automatic
+      size_mb: automatic
+    swap_as_percent_of_memory_size: automatic
+  pks-exporter:
+    max_in_flight: 5
+    additional_networks: []
+    additional_vm_extensions: []
+    instance_type:
+      id: automatic
+    instances: automatic
+    nsxt:
+      lb:
+        server_pools: []
+      ns_groups: []
+      vif_type: null
+    persistent_disk:
+      name: automatic
+      size_mb: automatic
+    swap_as_percent_of_memory_size: automatic
+  pks-sli-exporter:
+    max_in_flight: 5
+    additional_networks: []
+    additional_vm_extensions: []
+    instance_type:
+      id: automatic
+    instances: automatic
+    nsxt:
+      lb:
+        server_pools: []
+      ns_groups: []
+      vif_type: null
+    persistent_disk:
+      name: automatic
+      size_mb: automatic
+    swap_as_percent_of_memory_size: automatic
+errand-config:
+  bosh-cleanup-wait:
+    pre-delete-state: true
+  smoke-test:
+    post-deploy-state: true
+syslog-properties:
+  address: null
+  custom_rsyslog_configuration: null
+  enabled: false
+  forward_debug_logs: false
+  permitted_peer: null
+  port: null
+  queue_size: null
+  ssl_ca_certificate: null
+  tls_enabled: false
+  transport_protocol: tcp
+
