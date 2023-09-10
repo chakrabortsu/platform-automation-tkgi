@@ -8,16 +8,14 @@ product-properties:
     value: 60
 network-properties:
   network: 
-    value: infra 
+   value: infra 
   other_availability_zones: 
-  value:
-    - az1
-    - az2
+  - name: az1
+  - name: az2
   service_network: 
-    value: infra 
+   value: infra 
   singleton_availability_zone: 
-  value:
-    - az1
+  - name: az1
 resource-config:
   bosh-deployments-exporter:
     max_in_flight: 1
