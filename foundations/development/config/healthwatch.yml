@@ -31,7 +31,7 @@ product-properties:
     value: disabled
   .properties.grafana_route:
     selected_option: manual
-    value: grafana-ui.h2o-2-16358.h2o.vmware.com
+    value: 'grafana-ui.h2o-2-16358.h2o.vmware.com'
   .properties.pks_cluster_discovery:
     selected_option: enabled
     value: enabled
