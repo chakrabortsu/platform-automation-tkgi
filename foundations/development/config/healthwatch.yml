@@ -1,5 +1,5 @@
 ---
-product-name: p-healthwatch
+product-name: p-healthwatch2
 network-properties:
   singleton_availability_zone:
     name: az1

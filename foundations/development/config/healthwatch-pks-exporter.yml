@@ -1,0 +1,15 @@
+---
+product-name: p-healthwatch2-pks-exporter
+network-properties:
+  network:
+    name: pks
+  service_network:
+    name: services
+  other_availability_zones:
+  - name: az1
+  - name: az2
+  singleton_availability_zone:
+    name: az1
+product-properties:
+  .bosh-health-exporter.health_check_az:
+    value: az1
