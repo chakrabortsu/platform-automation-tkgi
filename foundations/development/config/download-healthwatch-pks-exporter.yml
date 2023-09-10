@@ -1,5 +1,5 @@
 ---
-pivnet-product-slug: p-healthwatch
+pivnet-product-slug: p-healthwatch2
 
 pivnet-file-glob: "healthwatch-pks-exporter-[0-9].*.pivotal"
 product-version: 2.2.8
