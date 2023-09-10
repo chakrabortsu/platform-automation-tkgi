@@ -7,12 +7,14 @@ product-properties:
   .pks-sli-exporter.test_frequency_seconds:
     value: 60
 network-properties:
-  network: infra
+  network: 
+    value: infra 
   other_availability_zones: 
   value:
     - az1
     - az2
-  service_network: infra
+  service_network: 
+    value: infra 
   singleton_availability_zone: 
   value:
     - az1
