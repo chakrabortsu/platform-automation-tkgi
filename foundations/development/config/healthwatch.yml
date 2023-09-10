@@ -30,8 +30,8 @@ product-properties:
     selected_option: disabled
     value: disabled
   .properties.grafana_route:
-    selected_option: manual
-    value: manual
+    selected_option: tas
+    value: tas
   .properties.pks_cluster_discovery:
     selected_option: enabled
     value: enabled
