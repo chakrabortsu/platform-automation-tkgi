@@ -36,6 +36,8 @@ resource-config:
   bosh-health-exporter:
     max_in_flight: 2
     additional_networks: []
+    other_availability_zones:
+    - name: az1
     additional_vm_extensions: []
     instance_type:
       id: automatic
