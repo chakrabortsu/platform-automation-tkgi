@@ -35,8 +35,7 @@ resource-config:
     swap_as_percent_of_memory_size: automatic
   bosh-health-exporter:
     max_in_flight: 2
-    additional_networks: []
-    other_availability_zones:
+    additional_networks: 
     - name: az1
     additional_vm_extensions: []
     instance_type:
