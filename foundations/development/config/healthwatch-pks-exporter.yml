@@ -8,12 +8,12 @@ product-properties:
     value: 60
 network-properties:
   network: 
-   value: infra 
+    name: infra 
   other_availability_zones: 
   - name: az1
   - name: az2
   service_network: 
-   value: infra 
+    name: infra 
   singleton_availability_zone: 
   - name: az1
 resource-config:
