@@ -15,7 +15,7 @@ network-properties:
   service_network: 
     name: infra 
   singleton_availability_zone: 
-  - name: az1
+    name: az1
 resource-config:
   bosh-deployments-exporter:
     max_in_flight: 1
