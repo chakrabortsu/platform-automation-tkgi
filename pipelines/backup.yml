@@ -35,7 +35,7 @@ resources:
     regexp: .*image-(.*).tgz
     disable_ssl: true
 
-- name: director-backup
+- name: backup
   type: s3
   source:
     access_key_id: ((s3_access_key_id))
@@ -107,9 +107,9 @@ jobs:
     params:
       ENV_FILE: foundations/config/env.yml
       OPSMAN_SSH_PRIVATE_KEY: ((plat-auto-pipes-deploy-key.private_key))
-  - put: director-backup
+  - put: backup
     params:
-      file: director-backup/director_*.tgz
+      file: backup/director_*.tgz
 
 - name: backup-tkgi-installation
   plan:
