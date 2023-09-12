@@ -102,6 +102,8 @@ jobs:
   - task: backup-director
     image: platform-automation-image
     file: platform-automation-tasks/tasks/backup-director.yml
+    input_mapping:
+      env: configuration
     params:
       ENV_FILE: foundations/config/env.yml
       OPSMAN_SSH_PRIVATE_KEY: ((plat-auto-pipes-deploy-key.private_key))
