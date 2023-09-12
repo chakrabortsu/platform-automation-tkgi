@@ -1,11 +1,4 @@
 ---
-groups:
-- jobs:
-    - backup-bosh-director
-    - backup-tkgi-installation
-    - backup-product-deployments
-  name: backup
-
 resource_types:
 - name: s3
   type: docker-image
@@ -14,7 +7,6 @@ resource_types:
     tag: 1.2.1-ubuntu
 
 resources:
-
 - name: platform-automation-tasks
   type: s3
   source:
@@ -42,27 +34,7 @@ resources:
     secret_access_key: ((s3_secret_access_key))
     endpoint: http://10.220.54.169:9000
     bucket: ((s3_pivnet_products_bucket))
-    regexp: director_(.*).tgz
-    disable_ssl: true
-
-- name: tkgi-backup
-  type: s3
-  source:
-    access_key_id: ((s3_access_key_id))
-    secret_access_key: ((s3_secret_access_key))
-    endpoint: http://10.220.54.169:9000
-    bucket: ((s3_pivnet_products_bucket))
     regexp: pivotal-container-service_clusters_(.*).tgz
-    disable_ssl: true
-
-- name: product-backup-deployment
-  type: s3
-  source:
-    access_key_id: ((s3_access_key_id))
-    secret_access_key: ((s3_secret_access_key))
-    endpoint: http://10.220.54.169:9000
-    bucket: ((s3_pivnet_products_bucket))
-    regexp: product_(.*).tgz
     disable_ssl: true
 
 - name: configuration
@@ -87,30 +59,6 @@ prepare-tasks-with-secrets: &prepare-tasks-with-secrets
     tasks: platform-automation-tasks
 
 jobs:
-- name: backup-bosh-director
-  plan:
-  - in_parallel:
-    - get: platform-automation-image
-      params:
-        unpack: true
-    - get: platform-automation-tasks
-      params:
-        unpack: true
-    - get: configuration
-  - task: prepare-tasks-with-secrets
-    <<: *prepare-tasks-with-secrets
-  - task: backup-director
-    image: platform-automation-image
-    file: platform-automation-tasks/tasks/backup-director.yml
-    input_mapping:
-      env: configuration
-    params:
-      ENV_FILE: foundations/config/env.yml
-      OPSMAN_SSH_PRIVATE_KEY: ((plat-auto-pipes-deploy-key.private_key))
-  - put: backup
-    params:
-      file: backup/director_*.tgz
-
 - name: backup-tkgi-installation
   plan:
   - in_parallel:
@@ -126,32 +74,12 @@ jobs:
   - task: backup-tkgi
     image: platform-automation-image
     file: platform-automation-tasks/tasks/backup-tkgi.yml
+    input_mapping:
+      env: configuration
     params:
       ENV_FILE: foundations/config/env.yml
       OPSMAN_SSH_PRIVATE_KEY: ((plat-auto-pipes-deploy-key.private_key)) 
-  - put: tkgi-backup
+  - put: backup
     params:
-      file: tkgi-backup/pivotal-container-service_clusters_*.tgz
+      file: backup/pivotal-container-service_clusters_*.tgz
 
-- name: backup-product-deployments
-  plan:
-  - in_parallel:
-    - get: platform-automation-image
-      params:
-        unpack: true
-    - get: platform-automation-tasks
-      params:
-        unpack: true
-    - get: configuration
-  - task: prepare-tasks-with-secrets
-    <<: *prepare-tasks-with-secrets
-  - task: backup-product
-    image: platform-automation-image
-    file: platform-automation-tasks/tasks/backup-product.yml
-    params:
-      PRODUCT_NAME: p-healthwatch2
-      ENV_FILE: foundations/config/env.yml
-      OPSMAN_SSH_PRIVATE_KEY: ((plat-auto-pipes-deploy-key.private_key))
-  - put: product-backup-deployment
-    params:
-      file: product-backup-deployment/product_*.tgz
