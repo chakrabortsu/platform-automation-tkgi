@@ -2,14 +2,14 @@ az-configuration:
 - name: az1
   iaas_configuration_name: default
   clusters:
-  - cluster: vc01cl01
+  - cluster: ((vcenter_cluster))
     drs_rule: MUST
     host_group: null
     resource_pool: RP-2-MGMT-TKGi
 - name: az2
   iaas_configuration_name: default
   clusters:
-  - cluster: vc01cl01
+  - cluster: ((vcenter_cluster))
     drs_rule: MUST
     host_group: null
     resource_pool: RP-2-MGMT-TKGi
@@ -18,7 +18,7 @@ iaas-configurations:
   bosh_disk_path: pcf_disk
   bosh_template_folder: pcf_templates
   bosh_vm_folder: pcf_vms
-  datacenter: vc01
+  datacenter: ((datacenter))
   disk_type: thin
   ephemeral_datastore_clusters_string: ""
   ephemeral_datastores_string: vsanDatastore
