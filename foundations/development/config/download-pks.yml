@@ -2,7 +2,7 @@
 pivnet-product-slug: pivotal-container-service
 
 pivnet-file-glob: "pivotal-container-service*.pivotal"
-product-version: 1.17.0
+product-version: 1.17.1
 stemcell-iaas: vsphere
 
 s3-access-key-id: ((s3_access_key_id))
