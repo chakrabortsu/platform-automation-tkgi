@@ -32,9 +32,9 @@ product-properties:
   .properties.network_selector.nsx.feign_client_read_timeout:
     value: 60000
   .properties.network_selector.nsx.floating-ip-pool-ids:
-    value: 2948eaec-179c-4f12-8a86-638d874612a5
+    value: b8aaedee-0af5-4c9b-b355-f885d64237a1
   .properties.network_selector.nsx.ip-block-id:
-    value: d226bf5e-6515-4b4a-ab58-cdfcc6414583
+    value: 14c8a045-c287-43af-9050-56ff3ebde551
   .properties.network_selector.nsx.nat_mode:
     value: true
   .properties.network_selector.nsx.ncp-ha-heartbeat-period:
@@ -46,7 +46,7 @@ product-properties:
   .properties.network_selector.nsx.network_automation:
     value: true
   .properties.network_selector.nsx.nodes-ip-block-id:
-    value: b735a07a-6e50-4bc9-8c8d-05e8678808de
+    value: 0c802901-da0c-4d25-91c7-894b0e60b47f
   .properties.network_selector.nsx.nsx-t-ca-cert:
     value: ((nsx_ca_cert.public_key))
   .properties.network_selector.nsx.nsx-t-host:
