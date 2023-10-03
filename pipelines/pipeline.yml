@@ -141,8 +141,10 @@ jobs:
     image: platform-automation-image
     file: platform-automation-tasks/tasks/test-interpolate.yml
     params:
-      CONFIG_FILE: foundations/((foundation))/config/director.yml
-      VARS_FILES: vars/foundations/((foundation))/vars/director.yml
+      CONFIG_FILE: foundations/((foundation))/config/pks.yml
+      VARS_FILES: | 
+        vars/foundations/((foundation))/vars/director.yml
+        vars/foundations/((foundation))/vars/pks.yml
       SKIP_MISSING: true
     input_mapping:
       config: configuration

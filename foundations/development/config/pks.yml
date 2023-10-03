@@ -9,17 +9,17 @@ product-properties:
     selected_option: vsphere
     value: vSphere
   .properties.cloud_provider.vsphere.vcenter_dc:
-    value: vc01
+    value: ((datacenter))
   .properties.cloud_provider.vsphere.vcenter_ds:
-    value: vsanDatastore
+    value: ((persistent_datastores_string))
   .properties.cloud_provider.vsphere.vcenter_ip:
-    value: vc01.h2o-2-16358.h2o.vmware.com
+    value: ((vcenter_url))
   .properties.cloud_provider.vsphere.vcenter_master_creds:
     value:
       identity: ((vcenter_username))
       password: ((vcenter_password))
   .properties.cloud_provider.vsphere.vcenter_vms:
-    value: pcf_vms
+    value: ((bosh_vm_folder))
   .properties.log_sink_resources_deploy:
     value: true
   .properties.metric_sink_resources_deploy:
@@ -32,9 +32,9 @@ product-properties:
   .properties.network_selector.nsx.feign_client_read_timeout:
     value: 60000
   .properties.network_selector.nsx.floating-ip-pool-ids:
-    value: b8aaedee-0af5-4c9b-b355-f885d64237a1
+    value: ((floating_ip_pool_ids))
   .properties.network_selector.nsx.ip-block-id:
-    value: 14c8a045-c287-43af-9050-56ff3ebde551
+    value: ((ip_block_id))
   .properties.network_selector.nsx.nat_mode:
     value: true
   .properties.network_selector.nsx.ncp-ha-heartbeat-period:
@@ -46,11 +46,11 @@ product-properties:
   .properties.network_selector.nsx.network_automation:
     value: true
   .properties.network_selector.nsx.nodes-ip-block-id:
-    value: 0c802901-da0c-4d25-91c7-894b0e60b47f
+    value: ((nodes_ip_block_id))
   .properties.network_selector.nsx.nsx-t-ca-cert:
     value: ((nsx_ca_cert.public_key))
   .properties.network_selector.nsx.nsx-t-host:
-    value: nsxt01.h2o-2-16358.h2o.vmware.com
+    value: ((nsx_url))
   .properties.network_selector.nsx.nsx-t-insecure:
     value: true
   .properties.network_selector.nsx.nsx-t-superuser-certificate:
@@ -62,9 +62,9 @@ product-properties:
   .properties.network_selector.nsx.service_cluster_cidr:
     value: 10.100.200.0/24
   .properties.network_selector.nsx.t0-router-id:
-    value: 16f02966-ad52-4b08-a16d-b2b35f255848
+    value: ((t0_router_id))
   .properties.network_selector.nsx.vcenter_cluster:
-    value: vc01cl01
+    value: ((vcenter_cluster))
   .properties.node_exporter_deploy:
     value: false
   .properties.oidc_selector:
@@ -77,7 +77,7 @@ product-properties:
     selected_option: disabled
     value: disabled
   .properties.pks_api_hostname:
-    value: api.second-tkgi.h2o-2-16358.h2o.vmware.com
+    value: ((pks_api_url))
   .properties.plan1_selector:
     selected_option: active
     value: Plan Active
@@ -190,12 +190,12 @@ product-properties:
     value: 4
 network-properties:
   network:
-    name: infra
+    name: ((vsphere_infra_network))
   other_availability_zones:
   - name: az1
   - name: az2
   service_network:
-    name: infra
+    name: ((vsphere_infra_network))
   singleton_availability_zone:
     name: az1
 resource-config:
