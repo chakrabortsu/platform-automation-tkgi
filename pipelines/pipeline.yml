@@ -207,7 +207,7 @@ jobs:
   - task: configure-authentication
     image: platform-automation-image
     file: platform-automation-tasks/tasks/configure-authentication.yml
-    attempts: 5
+    attempts: 10
     input_mapping:
       env: configuration
       config: configuration
@@ -347,7 +347,7 @@ jobs:
     params:
       ENV_FILE: foundations/config/env.yml
       OPSMAN_CONFIG_FILE: foundations/((foundation))/config/opsman.yml
-      STATE_FILE: state-((foundation)).yml
+      STATE_FILE: currentstate-((foundation)).yml
       INSTALLATION_FILE: ((foundation))-installation*.zip
       VARS_FILES: vars/foundations/((foundation))/vars/director.yml
     ensure: *put-state
@@ -705,12 +705,12 @@ jobs:
         config: configuration
       params:
         OPSMAN_CONFIG_FILE: foundations/((foundation))/config/opsman.yml
-        STATE_FILE: state-((foundation)).yml
+        STATE_FILE: currentstate-((foundation)).yml
       ensure:
         do:
         - put: state
           params:
-            file: generated-state/state-((foundation)).yml
+            file: generated-state/currentstate-((foundation)).yml
     # code_snippet delete-vm-usage end
 
 
