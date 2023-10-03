@@ -195,7 +195,7 @@ jobs:
       vars: configuration
     params:
       OPSMAN_CONFIG_FILE: foundations/((foundation))/config/opsman.yml
-      STATE_FILE: state-((foundation)).yml
+     #STATE_FILE: state-((foundation)).yml
       VARS_FILES: vars/foundations/((foundation))/vars/director.yml
     ensure: &put-state
       do:
