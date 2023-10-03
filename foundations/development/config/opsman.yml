@@ -5,7 +5,7 @@ opsman-configuration:
     #  ca_cert: cert                 # REQUIRED if insecure = 0 (secure)
       datacenter: vc01
       datastore: vsanDatastore
-      folder: /vc01/vm/opsman # RECOMMENDED, but not required
+      folder: /vc01/vm/ # RECOMMENDED, but not required
       url: vc01.h2o-2-16358.h2o.vmware.com
       username: ((vcenter_username))
       password: ((vcenter_password))
