@@ -70,7 +70,7 @@ resources:
     secret_access_key: ((s3_secret_access_key))
     bucket: ((s3_pivnet_products_bucket))
     endpoint: http://10.220.54.169:9000
-    versioned_file: state-((foundation)).yml
+    versioned_file: currentstate-((foundation)).yml
     initial_content_text: '{}'
     initial_version: 'empty-start'
     disable_ssl: true
@@ -195,13 +195,13 @@ jobs:
       vars: configuration
     params:
       OPSMAN_CONFIG_FILE: foundations/((foundation))/config/opsman.yml
-      STATE_FILE: state-((foundation)).yml
+      STATE_FILE: currentstate-((foundation)).yml
       VARS_FILES: vars/foundations/((foundation))/vars/director.yml
     ensure: &put-state
       do:
       - put: state
         params:
-          file: generated-state/state-((foundation)).yml
+          file: generated-state/currentstate-((foundation)).yml
   # code_snippet create-vm-usage end
   # code_snippet configure-authentication-usage start yaml
   - task: configure-authentication
