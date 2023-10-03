@@ -5,7 +5,7 @@ opsman-configuration:
     #  ca_cert: cert                 # REQUIRED if insecure = 0 (secure)
       datacenter: vc01
       datastore: vsanDatastore
-      folder: /vc01/vm/ # RECOMMENDED, but not required
+      folder: /vc01/vm/opsman # RECOMMENDED, but not required
       url: vc01.h2o-2-16358.h2o.vmware.com
       username: ((vcenter_username))
       password: ((vcenter_password))
@@ -26,4 +26,4 @@ opsman-configuration:
     ntp: time1.oc.vmware.com,time2.oc.vmware.com,time3.oc.vmware.com,time4.oc.vmware.com
     private_ip: 192.168.1.3
     ssh_public_key: ((vsphere_ssh_key))
-    vm_name: opsman2
+    #vm_name: opsman2
