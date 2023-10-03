@@ -15,9 +15,9 @@ az-configuration:
     resource_pool: RP-2-MGMT-TKGi
 iaas-configurations:
 - additional_cloud_properties: {}
-  bosh_disk_path: pcf_disk
-  bosh_template_folder: pcf_templates
-  bosh_vm_folder: pcf_vms
+  bosh_disk_path: ((bosh_disk_path)) 
+  bosh_template_folder: ((bosh_template_folder))
+  bosh_vm_folder: ((bosh_vm_folder))
   datacenter: ((datacenter))
   disk_type: thin
   ephemeral_datastore_clusters_string: ""
@@ -32,9 +32,9 @@ iaas-configurations:
   nsx_t_use_policy_api: false
   nsx_username: admin
   persistent_datastore_clusters_string: ""
-  persistent_datastores_string: vsanDatastore
-  ssl_verification_enabled: false
-  vcenter_host: vc01.h2o-2-16358.h2o.vmware.com
+  persistent_datastores_string: ((persistent_datastores_string))
+  ssl_verification_enabled: ((ssl_verification_enabled))
+  vcenter_host: ((vcenter_url))
   vcenter_password: ((vcenter_password))
   vcenter_username: ((vcenter_username))
 network-assignment:
@@ -46,7 +46,7 @@ network-assignment:
 networks-configuration:
   icmp_checks_enabled: true
   networks:
-  - name: infra
+  - name: ((vsphere_infra_network))
     subnets:
     - iaas_identifier: LS-PKS-Infra
       cidr: 192.168.1.0/24
@@ -56,7 +56,7 @@ networks-configuration:
       availability_zone_names:
       - az1
       - az2
-  - name: services
+  - name: ((vsphere_services_network))
     subnets:
     - iaas_identifier: LS-PKS-Deployment
       cidr: 192.168.2.0/24
