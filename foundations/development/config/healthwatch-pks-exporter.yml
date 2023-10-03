@@ -10,12 +10,12 @@ product-properties:
     value: az1
 network-properties:
   network: 
-    name: infra 
+    name: ((vsphere_infra_network))
   other_availability_zones: 
   - name: az1
   - name: az2
   service_network: 
-    name: infra 
+    name: ((vsphere_services_network)) 
   singleton_availability_zone: 
     name: az1
 resource-config:
